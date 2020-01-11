@@ -1,11 +1,15 @@
-<!-- <%- include("partials/header") %> -->
+<%- include("partials/header") %>
 
 <h1>Welcome to the index page</h1>
 
 <!-- posts is variable for posts -->
 <% for (i = 0; i < posts.length; i++){ %>
-    <h2><%= posts[i].title %></h2>
-    <img src="<%= posts[i].image %>" alt="">
+    <div>
+        <h2><%= posts[i].title %></h2>
+        <img src="<%= posts[i].image %>" alt="">
+        <span><%= posts[i].created %></span>
+        <p><%= posts[i].body %></p>
+    </div>
 <% } %>
 
-<!-- <%- include("partials/footer") %> -->
+<%- include("partials/footer") %>

@@ -24,14 +24,13 @@ const blogSchema = new mongoose.Schema({
 });
 const Post = mongoose.model("Post", blogSchema);
 
-// Post.create({
-//     title: "Test Blog",
-//     image: "https://images.unsplash.com/photo-1565855991995-7a5ceb19ee95?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80",
-//     body: "This is a test blog post. Welcome to my blog. I hope you have a great day.",
-// })
+//Home page
+app.get("/", function(req, res){
+    res.redirect("/posts");
+})
 
 //RESTful Routes
-app.get("/posts", function(req, res){
+app.get("/posts", function(req, res){ //index
     Post.find({}, function(err, allPosts){
         if (err){
             console.log(err);
@@ -40,12 +39,6 @@ app.get("/posts", function(req, res){
         }
     });   
 });
-
-
-//Set up the blog app
-// create the blog model
-// add index route and template
-// add simple nav bar
 
 //Start server
 app.listen(3000, function(){
