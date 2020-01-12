@@ -30,7 +30,7 @@ app.get("/", function(req, res){
 })
 
 //RESTful Routes
-app.get("/posts", function(req, res){ //index
+app.get("/posts", function(req, res){ //index - show all blog posts
     Post.find({}, function(err, allPosts){
         if (err){
             console.log(err);
@@ -38,6 +38,21 @@ app.get("/posts", function(req, res){ //index
             res.render("index", {posts: allPosts});
         }
     });   
+});
+
+app.get("/posts/new", function(req, res){ //new - show form to add a new blog post
+    res.render("new");
+});
+
+app.post("/posts", function(req, res){ //create - create a new blog post and redirect to index
+    //create a new blog post
+    Post.create(req.body.post, function(err, newPost){
+        if (err){
+            res.render("new");
+        } else{
+            res.redirect("/posts"); 
+        }
+    });
 });
 
 //Start server
