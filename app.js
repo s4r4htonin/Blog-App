@@ -1,8 +1,9 @@
 //Definitions
-const   express    = require("express"),
-        app        = express(),
-        bodyParser = require("body-parser"),
-        mongoose   = require("mongoose");
+const   express        = require("express"),
+        app            = express(),
+        bodyParser     = require("body-parser"),
+        mongoose       = require("mongoose"),
+        methodOverride = require("method-override");
 
 //Fix mongoose deprecation warnings
 mongoose.set('useNewUrlParser', true);
@@ -10,10 +11,12 @@ mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
 mongoose.set('useUnifiedTopology', true);
 
+//App Config
 mongoose.connect("mongodb://localhost/blog_app"); //connect JS to MongoDB
+app.set("view engine", "ejs"); //Tells express that /views are ejs files
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
-app.set("view engine", "ejs"); //Tells express that /views are ejs files
+app.use(methodOverride("_method")); //allows us to cheat PUT or DELETE requests in a form through the POST method
 
 //Schema Set up
 const blogSchema = new mongoose.Schema({
@@ -62,6 +65,26 @@ app.get("/posts/:id", function(req, res){ //show - shows all info about a specif
             res.redirect("/posts");
         } else{
             res.render("show", {post: foundPost}); //render the post with the show template
+        }
+    });
+});
+
+app.get("/posts/:id/edit", function(req, res){ //edit - show form to edit an existing blog post
+    Post.findById(req.params.id, function(err, foundPost){
+        if (err){
+            res.redirect("/posts");
+        } else{
+            res.render("edit", {post: foundPost}); //render the edit template with the found blog post
+        }
+    });
+});
+
+app.put("/posts/:id", function(req, res){ //update - update the existing blog post and redirect to the show page
+    Post.findByIdAndUpdate(req.params.id, req.body.post, function(err, updatedPost){
+        if (err){
+            res.redirect("/posts");
+        } else{
+            res.redirect("/posts/" + req.params.id);
         }
     });
 });
