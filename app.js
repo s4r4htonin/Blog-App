@@ -55,6 +55,17 @@ app.post("/posts", function(req, res){ //create - create a new blog post and red
     });
 });
 
+app.get("/posts/:id", function(req, res){ //show - shows all info about a specific blog post
+    //get the specific id of the post
+    Post.findById(req.params.id, function(err, foundPost){
+        if (err){
+            res.redirect("/posts");
+        } else{
+            res.render("show", {post: foundPost}); //render the post with the show template
+        }
+    });
+});
+
 //Start server
 app.listen(3000, function(){
     console.log("Server started on port 3000");
