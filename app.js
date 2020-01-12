@@ -2,11 +2,12 @@
 //    Definitions    //
 //~~~~~~~~~~~~~~~~~~~//
 
-const   express        = require("express"),
-        app            = express(),
-        bodyParser     = require("body-parser"),
-        mongoose       = require("mongoose"),
-        methodOverride = require("method-override");
+const   express         = require("express"),
+        app             = express(),
+        bodyParser      = require("body-parser"),
+        mongoose        = require("mongoose"),
+        methodOverride  = require("method-override"),
+        expressSanitzer = require("express-sanitizer");
 
 //~~~~~~~~~~~~~~~~~~//
 //    App Config    //
@@ -21,6 +22,7 @@ mongoose.set('useUnifiedTopology', true);
 mongoose.connect("mongodb://localhost/blog_app"); //connect JS to MongoDB
 app.set("view engine", "ejs"); //Tells express that /views are ejs files
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(expressSanitzer()); //must go after bodyParser
 app.use(express.static("public"));
 app.use(methodOverride("_method")); //allows us to cheat PUT or DELETE requests in a form through the POST method
 
@@ -60,6 +62,8 @@ app.get("/posts/new", function(req, res){
 
 //CREATE - Create a new blog post and redirect to index
 app.post("/posts", function(req, res){
+    //sanitize
+    req.body.post.body = req.sanitize(req.body.post.body);
     //create a new blog post
     Post.create(req.body.post, function(err, newPost){
         if (err){
@@ -95,6 +99,9 @@ app.get("/posts/:id/edit", function(req, res){
 
 //UPDATE - Update an existing blog post and redirect to the show page
 app.put("/posts/:id", function(req, res){
+    //sanitize
+    req.body.post.body = req.sanitize(req.body.post.body);
+    //update an existing blog post
     Post.findByIdAndUpdate(req.params.id, req.body.post, function(err, updatedPost){
         if (err){
             res.redirect("/posts");
