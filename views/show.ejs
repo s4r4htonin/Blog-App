@@ -13,6 +13,9 @@
                 <div class="description">
                     <p><%- post.body %></p> <!--Using - instead of = makes ejs evaluate, so any html in the post is used instead of displayed as text-->
                 </div>
+                <form action="/posts/<%= post._id %>?_method=DELETE" method="POST">
+                    <button class="ui red basic button">Delete</button>
+                </form>
             </div>
         </div>
     </div>
